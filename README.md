@@ -1,6 +1,6 @@
-# Code Chunker & Parser
+# CintraAI Code Chunker
 
-The Code Chunker & Parser is a novel open-source tool designed to enhance code readability and maintainability by intelligently chunking code files based on key points of interest. This tool leverages advanced parsing techniques to identify significant elements in your code, such as functions, classes, and comments, to organize your codebase into manageable, easily understandable chunks. It's an invaluable resource for developers looking to optimize their code for better collaboration and efficiency.
+Cintra's Code Chunker is a novel open-source tool designed to enhance code readability and maintainability by intelligently chunking code files based on key points of interest. This tool leverages advanced parsing techniques to identify significant elements in your code, such as functions, classes, and comments, to organize your codebase into manageable, easily understandable chunks. It's an invaluable resource for applications such as RAG, code patching, and other use cases.
 
 ## Features
 
