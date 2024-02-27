@@ -13,7 +13,6 @@ Cintra's Code Chunker is a novel open-source tool designed to enhance code reada
 ### Prerequisites
 
 - Python 3.8+
-- OpenAI API key (for token counting features)
 
 ### Installation
 
