@@ -35,8 +35,6 @@ pip install -r requirements.txt
 Use the CodeChunker class to chunk a specific code file. You can specify the file extension and token limit for chunking.
 Example:
 ```py
-from backend.app.util.TextChunker.Chunker import CodeChunker
-
 chunker = CodeChunker(file_extension='py', encoding_name='gpt-4')
 chunks = chunker.chunk(your_code_here, token_limit=1000)
 CodeChunker.print_chunks(chunks)
@@ -46,8 +44,6 @@ CodeChunker.print_chunks(chunks)
 The CodeParser class allows you to parse code to identify points of interest and comments, which can then be used for chunking or other analysis.
 Example:
 ```
-from backend.app.util.CodeParsing.CodeParser import CodeParser
-
 parser = CodeParser(['py'])
 tree = parser.parse_code(your_code_here, 'py')
 points_of_interest = parser.extract_points_of_interest(tree, 'py')
