@@ -59,3 +59,14 @@ This project is licensed under the Apache 2.0 license. See the License file for 
 - This also uses tiktoken to count tokens for determining chunk sizes.
 
 
+---
+title: Test
+emoji: 🐢
+colorFrom: pink
+colorTo: purple
+sdk: streamlit
+sdk_version: 1.33.0
+app_file: app.py
+pinned: false
+license: mit
+---
