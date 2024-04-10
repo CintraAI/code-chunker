@@ -1,9 +1,27 @@
 import streamlit as st
 from utils import load_json, count_tokens
 import json
+import os
 
 # Set up the Streamlit page configuration
 st.set_page_config(page_title="Cintra Code Chunker", layout="wide")
+
+# Slider to select a value
+x = st.slider("Select a value")
+st.write(x, "squared is", x * x)
+
+
+code_files_directory = "example_code_files"
+code_files = os.listdir(code_files_directory)
+
+# Dropdown menu for the user to select a code file
+selected_file = st.selectbox("Select a code file", code_files)
+
+file_path = os.path.join(code_files_directory, selected_file)
+with open(file_path, "r") as file:
+    code_content = file.read()
+    st.code(code_content, language="python")
+
 
 def main():
     # Streamlit widgets for file selection
