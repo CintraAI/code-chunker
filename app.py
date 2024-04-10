@@ -8,6 +8,10 @@ def load_json_file(file_path):
     with open(file_path, 'r') as file:
         return json.load(file)
 
+# Function to read code from an uploaded file
+def read_code_from_file(uploaded_file):
+    return uploaded_file.getvalue().decode("utf-8")
+
 # Setup Streamlit page
 st.set_page_config(page_title="Cintra Code Chunker", layout="wide")
 
@@ -21,16 +25,24 @@ code_files = list(code_files_data.keys())
 # UI Elements
 st.title('Cintra Code Chunker')
 
-# File selection
-selected_file_name = st.selectbox("Select a code file", code_files)
+# Create two columns for file selection and file upload
+col1, col2 = st.columns(2)
 
-# Token Chunk Size Slider
-token_chunk_size = st.slider('Token Chunk Size Target', min_value=5, max_value=1000, value=25)
+with col1:
+    # File selection dropdown
+    selected_file_name = st.selectbox("Select an example code file", code_files)
 
-# Assuming you have the content as a string in the JSON, extract directly
-code_content = code_files_data[selected_file_name]
+with col2:
+    # File upload
+    uploaded_file = st.file_uploader("Or upload your code file", type=['py', 'js', 'css'])
 
-file_extension = selected_file_name.split('.')[-1]
+# Determine the content and file extension based on selection or upload
+if uploaded_file is not None:
+    code_content = read_code_from_file(uploaded_file)
+    file_extension = uploaded_file.name.split('.')[-1]
+else:
+    code_content = code_files_data.get(selected_file_name, "")
+    file_extension = selected_file_name.split('.')[-1] if selected_file_name else None
 
 # Determine the language for syntax highlighting
 def get_language_by_extension(file_extension):
@@ -44,6 +56,9 @@ def get_language_by_extension(file_extension):
         return None  # Default to no syntax highlighting if extension is not recognized
 
 language = get_language_by_extension(file_extension)
+
+# User input for Token Chunk Size
+token_chunk_size = st.number_input('Token Chunk Size Target', min_value=5, max_value=1000, value=25)
 
 col1, col2 = st.columns(2)
 
