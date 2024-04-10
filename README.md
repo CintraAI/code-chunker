@@ -1,3 +1,15 @@
+---
+title: Test
+emoji: 🐢
+colorFrom: pink
+colorTo: purple
+sdk: streamlit
+sdk_version: 1.33.0
+app_file: app.py
+pinned: false
+license: mit
+---
+
 # CintraAI Code Chunker
 
 Cintra's Code Chunker is a novel open-source tool designed to enhance code readability and maintainability by intelligently chunking code files based on key points of interest. This tool leverages advanced parsing techniques to identify significant elements in your code, such as functions, classes, and comments, to organize your codebase into manageable, easily understandable chunks. It's an invaluable resource for applications such as RAG, code patching, and other use cases.
@@ -58,15 +70,3 @@ This project is licensed under the Apache 2.0 license. See the License file for 
 - This project utilizes the tree-sitter project for parsing code.
 - This also uses tiktoken to count tokens for determining chunk sizes.
 
-
----
-title: Test
-emoji: 🐢
-colorFrom: pink
-colorTo: purple
-sdk: streamlit
-sdk_version: 1.33.0
-app_file: app.py
-pinned: false
-license: mit
----
