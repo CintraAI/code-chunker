@@ -2,7 +2,7 @@
 title: CintraAI Code Chunker
 emoji: 🧩
 colorFrom: blue
-colorTo: teal
+colorTo: indigo
 sdk: streamlit
 sdk_version: latest
 app_file: app.py
