@@ -1,5 +1,5 @@
 ---
-title: Cintra's Code Chunker
+title: CintraAI Code Chunker
 emoji: 🧩
 colorFrom: blue
 colorTo: indigo
