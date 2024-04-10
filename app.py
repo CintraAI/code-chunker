@@ -2,7 +2,7 @@ import streamlit as st
 import json
 import os
 from Chunker import CodeChunker
-from utils import count_tokens
+
 # Function to load JSON data
 def load_json_file(file_path):
     with open(file_path, 'r') as file:
@@ -23,6 +23,9 @@ st.title('Cintra Code Chunker')
 
 # File selection
 selected_file_name = st.selectbox("Select a code file", code_files)
+
+# Token Chunk Size Slider
+token_chunk_size = st.slider('Token Chunk Size Target', min_value=5, max_value=1000, value=25)
 
 # Assuming you have the content as a string in the JSON, extract directly
 code_content = code_files_data[selected_file_name]
@@ -48,18 +51,14 @@ with col1:
     st.subheader('Original File')
     st.code(code_content, language=language)
 
+# Initialize the code chunker
+code_chunker = CodeChunker(file_extension=file_extension)
+
+# Chunk the code content
+chunked_code_dict = code_chunker.chunk(code_content, token_chunk_size)
+
+# Automatically display chunks without needing to select
 with col2:
-    token_chunk_size = st.sidebar.slider('Token Chunk Size Target', min_value=5, max_value=50, value=25)
-    if st.sidebar.button("Chunk Code"):
-        # Initialize the code chunker
-        code_chunker = CodeChunker(file_extension=file_extension)
-
-        # Chunk the code content
-        chunked_code_dict = code_chunker.chunk(code_content, token_chunk_size)
-
-        # Select a chunk to display
-        chunk_keys = list(chunked_code_dict.keys())
-        selected_chunk_key = st.selectbox("Select Chunk", options=chunk_keys)
-
-        st.subheader('Chunked Code')
-        st.code(chunked_code_dict[selected_chunk_key], language=language)
+    st.subheader('Chunked Code')
+    for chunk_key, chunk_code in chunked_code_dict.items():
+        st.code(chunk_code, language=language)
