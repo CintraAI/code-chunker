@@ -3,6 +3,9 @@ import json
 import os
 from Chunker import CodeChunker
 
+# Set Streamlit page config at the very beginning
+st.set_page_config(page_title="Cintra Code Chunker", layout="wide")
+
 # Function to load JSON data
 def load_json_file(file_path):
     with open(file_path, 'r') as file:
@@ -12,29 +15,24 @@ def load_json_file(file_path):
 def read_code_from_file(uploaded_file):
     return uploaded_file.getvalue().decode("utf-8")
 
-# Setup Streamlit page
-st.set_page_config(page_title="Cintra Code Chunker", layout="wide")
+st.link_button('Contribute on GitHub', 'https://github.com/CintraAI/code-chunker', help=None, type="secondary", disabled=False, use_container_width=False)
 
-# Assuming app.py and mock_codefiles.json are in the same directory
 json_file_path = os.path.join(os.path.dirname(__file__), 'mock_codefiles.json')
 code_files_data = load_json_file(json_file_path)
 
 # Extract filenames and contents
 code_files = list(code_files_data.keys())
 
-# UI Elements
 st.title('Cintra Code Chunker')
 
-# Create two columns for file selection and file upload
-col1, col2 = st.columns(2)
-
-with col1:
+selection_col, upload_col = st.columns(2)
+with selection_col:
     # File selection dropdown
     selected_file_name = st.selectbox("Select an example code file", code_files)
 
-with col2:
+with upload_col:
     # File upload
-    uploaded_file = st.file_uploader("Or upload your code file", type=['py', 'js', 'css'])
+    uploaded_file = st.file_uploader("Or upload your code file", type=['py', 'js', 'css', 'jsx'])
 
 # Determine the content and file extension based on selection or upload
 if uploaded_file is not None:
@@ -53,16 +51,15 @@ def get_language_by_extension(file_extension):
     elif file_extension == 'css':
         return 'css'
     else:
-        return None  # Default to no syntax highlighting if extension is not recognized
+        return None
 
 language = get_language_by_extension(file_extension)
 
-# User input for Token Chunk Size
-token_chunk_size = st.number_input('Token Chunk Size Target', min_value=5, max_value=1000, value=25)
+token_chunk_size = st.number_input('Chunk Size Target Measured in Tokens (tiktoken, gpt-4)', min_value=5, max_value=1000, value=25)
 
-col1, col2 = st.columns(2)
+original_col, chunked_col = st.columns(2)
 
-with col1:
+with original_col:
     st.subheader('Original File')
     st.code(code_content, language=language)
 
@@ -72,8 +69,7 @@ code_chunker = CodeChunker(file_extension=file_extension)
 # Chunk the code content
 chunked_code_dict = code_chunker.chunk(code_content, token_chunk_size)
 
-# Automatically display chunks without needing to select
-with col2:
+with chunked_col:
     st.subheader('Chunked Code')
     for chunk_key, chunk_code in chunked_code_dict.items():
         st.code(chunk_code, language=language)
