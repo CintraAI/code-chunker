@@ -55,7 +55,20 @@ def get_language_by_extension(file_extension):
 
 language = get_language_by_extension(file_extension)
 
-token_chunk_size = st.number_input('Chunk Size Target Measured in Tokens (tiktoken, gpt-4)', min_value=5, max_value=1000, value=25)
+st.write("""
+### Choose Chunk Size Target""")
+token_chunk_size = st.number_input('Target Chunk Size Target', min_value=5, max_value=1000, value=25, help="The token limit guides the chunk size in tokens (tiktoken, gpt-4), aiming for readability without enforcing a strict upper limit.")
+
+with st.expander("Learn more about the chunk size target"):
+    st.markdown("""
+The `token_limit` parameter in the `chunk` function serves as a guideline to optimize the size of code chunks produced. It is not a hard limit but rather an ideal target, attempting to achieve a balance between chunk size and maintaining logical coherence within the code.
+
+- **Adherence to Logical Breakpoints:** The chunking logic respects logical breakpoints in the code, ensuring that chunks are coherent and maintain readability.
+- **Flexibility in Chunk Size:** Chunks might be slightly smaller or larger than the specified `token_limit` to avoid breaking the code in the middle of logical sections.
+- **Handling Final Chunks:** The last chunk of code captures any remaining code, which may vary significantly in size depending on the remaining code's structure.
+
+This approach allows for flexibility in how code is segmented into chunks, emphasizing the balance between readable, logical code segments and size constraints.
+    """)
 
 original_col, chunked_col = st.columns(2)
 
