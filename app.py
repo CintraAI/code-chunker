@@ -12,8 +12,13 @@ def load_json_file(file_path):
 def read_code_from_file(uploaded_file):
     return uploaded_file.getvalue().decode("utf-8")
 
-# Setup Streamlit page
-st.set_page_config(page_title="Cintra Code Chunker", layout="wide")
+col1, col2 = st.columns(2)
+
+with col1:
+    # Setup Streamlit page
+    st.set_page_config(page_title="Cintra Code Chunker", layout="wide")
+with col2:
+    st.markdown('Interested in contributing? Check out our [GitHub repository](https://github.com/CintraAI/code-chunker) and help us improve!', unsafe_allow_html=True)
 
 # Assuming app.py and mock_codefiles.json are in the same directory
 json_file_path = os.path.join(os.path.dirname(__file__), 'mock_codefiles.json')
