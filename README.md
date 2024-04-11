@@ -67,6 +67,14 @@ tree = parser.parse_code(your_code_here, 'py')
 points_of_interest = parser.extract_points_of_interest(tree, 'py')
 ```
 
+3. Understanding the Token Limit in Chunking:
+
+In the `chunk` method of the `Chunker` class, a `token_limit` parameter is used to control the size of each chunk of code. A 'token' can be thought of as the smallest unit of processing. In the context of text processing, a token could be a word, a sentence, or a similar unit.
+
+The `token_limit` parameter limits the number of these tokens for each chunk. If the limit is, for instance, 100 tokens, that means each chunk of content produced by the `chunk` method should contain no more than 100 tokens.
+
+It is worth noting that the way content is tokenized and how a token is defined depends on the specific implementation and the type of content being processed.
+
 ## Contributing
 We welcome contributions from the community, whether it's through reporting bugs, submitting feature requests, or sending pull requests. Please check the CONTRIBUTING.md file for more details on how to contribute to the project.
 
