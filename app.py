@@ -58,7 +58,7 @@ def get_language_by_extension(file_extension):
 language = get_language_by_extension(file_extension)
 
 # User input for Token Chunk Size
-token_chunk_size = st.number_input('Token Chunk Size Target', min_value=5, max_value=1000, value=25)
+token_chunk_size = st.number_input('Chunk Size Target Measured in Tokens (Using Tiktoken)', min_value=5, max_value=1000, value=25)
 
 col1, col2 = st.columns(2)
 
