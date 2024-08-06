@@ -5,6 +5,12 @@ from tree_sitter import Language, Parser, Node
 from typing import Union, List
 import logging
 
+def return_simple_line_numbers_with_code(code: str) -> str:
+    code_lines = code.split('\n')
+    code_with_line_numbers = [f"Line {i + 1}: {line}" for i, line in enumerate(code_lines)]
+    joined_lines = "\n".join(code_with_line_numbers)
+    return joined_lines
+
 
 class CodeParser:
     # Added a CACHE_DIR class attribute for caching
@@ -17,7 +23,11 @@ class CodeParser:
             "py": "python",
             "js": "javascript",
             "jsx": "javascript",
-            "css": "css"
+            "css": "css",
+            "ts": "typescript",
+            "tsx": "typescript",
+            "php": "php",
+            "rb": "ruby"
         }
         if file_extensions is None:
             self.language_names = []
@@ -28,37 +38,65 @@ class CodeParser:
         self._install_parsers()
 
     def _install_parsers(self):
-        logging.basicConfig(level=logging.INFO)  # Configure logging
-
-        # Ensure cache directory exists
-        if not os.path.exists(self.CACHE_DIR):
-            os.makedirs(self.CACHE_DIR)
-
-        # Configure logging to output to the terminal
         logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-        for language in self.language_names:
-            repo_path = os.path.join(self.CACHE_DIR, f"tree-sitter-{language}")
+        try:
+            # Ensure cache directory exists
+            if not os.path.exists(self.CACHE_DIR):
+                os.makedirs(self.CACHE_DIR)
 
-            if not os.path.exists(repo_path):
-                clone_command = f"git clone https://github.com/tree-sitter/tree-sitter-{language} {repo_path}"
-                result = subprocess.run(
-                    clone_command,
-                    shell=True,
-                    stdout=subprocess.PIPE,  # Capture standard output
-                    stderr=subprocess.PIPE  # Capture standard error
-                )
+            for language in self.language_names:
+                repo_path = os.path.join(self.CACHE_DIR, f"tree-sitter-{language}")
 
-                # Check if cloning was successful
-                if result.returncode != 0:
-                    logging.error(
-                        f"Failed to clone repository for {language}. Command: '{clone_command}'. Error: {result.stderr.decode('utf-8')}")
-                    raise Exception(f"Failed to clone repository for {language}")
+                # Check if the repository exists and contains necessary files
+                if not os.path.exists(repo_path) or not self._is_repo_valid(repo_path, language):
+                    try:
+                        if os.path.exists(repo_path):
+                            logging.info(f"Updating existing repository for {language}")
+                            update_command = f"cd {repo_path} && git pull"
+                            subprocess.run(update_command, shell=True, check=True)
+                        else:
+                            logging.info(f"Cloning repository for {language}")
+                            clone_command = f"git clone https://github.com/tree-sitter/tree-sitter-{language} {repo_path}"
+                            subprocess.run(clone_command, shell=True, check=True)
+                    except subprocess.CalledProcessError as e:
+                        logging.error(f"Failed to clone/update repository for {language}. Error: {e}")
+                        continue
 
-            build_path = os.path.join(self.CACHE_DIR, f"build/{language}.so")
-            Language.build_library(build_path, [repo_path])
+                try:
+                    build_path = os.path.join(self.CACHE_DIR, f"build/{language}.so")
+                    
+                    # Special handling for TypeScript
+                    if language == 'typescript':
+                        ts_dir = os.path.join(repo_path, 'typescript')
+                        tsx_dir = os.path.join(repo_path, 'tsx')
+                        if os.path.exists(ts_dir) and os.path.exists(tsx_dir):
+                            Language.build_library(build_path, [ts_dir, tsx_dir])
+                        else:
+                            raise FileNotFoundError(f"TypeScript or TSX directory not found in {repo_path}")
+                    if language == 'php':
+                        php_dir = os.path.join(repo_path, 'php')
+                        Language.build_library(build_path, [php_dir])
+                    else:
+                        Language.build_library(build_path, [repo_path])
+                    
+                    self.languages[language] = Language(build_path, language)
+                    logging.info(f"Successfully built and loaded {language} parser")
+                except Exception as e:
+                    logging.error(f"Failed to build or load language {language}. Error: {str(e)}")
 
-            self.languages[language] = Language(build_path, language)
+        except Exception as e:
+            logging.error(f"An unexpected error occurred during parser installation: {str(e)}")
+
+    def _is_repo_valid(self, repo_path: str, language: str) -> bool:
+        """Check if the repository contains necessary files."""
+        if language == 'typescript':
+            return (os.path.exists(os.path.join(repo_path, 'typescript', 'src', 'parser.c')) and
+                     os.path.exists(os.path.join(repo_path, 'tsx', 'src', 'parser.c')))
+        elif language == 'php':
+            return os.path.exists(os.path.join(repo_path, 'php', 'src', 'parser.c'))
+        else:
+            return os.path.exists(os.path.join(repo_path, 'src', 'parser.c'))
 
     def parse_code(self, code: str, file_extension: str) -> Union[None, Node]:
         language_name = self.language_extension_map.get(file_extension)
@@ -112,6 +150,31 @@ class CodeParser:
                 'function_declaration': 'Function',
                 'arrow_function': 'Arrow Function',
                 'statement_block': 'Block',
+            },
+            'ts': {
+                'import_statement': 'Import',
+                'export_statement': 'Export',
+                'class_declaration': 'Class',
+                'function_declaration': 'Function',
+                'arrow_function': 'Arrow Function',
+                'statement_block': 'Block',
+                'interface_declaration': 'Interface',
+                'type_alias_declaration': 'Type Alias',
+            },
+            'php': {
+                'namespace_definition': 'Namespace',
+                'class_declaration': 'Class',
+                'method_declaration': 'Method',
+                'function_definition': 'Function',
+                'interface_declaration': 'Interface',
+                'trait_declaration': 'Trait',
+            },
+            'rb': {
+                'class': 'Class',
+                'method': 'Method',
+                'module': 'Module',
+                'singleton_class': 'Singleton Class',
+                'begin': 'Begin Block',
             }
         }
 
@@ -119,6 +182,8 @@ class CodeParser:
             return node_types[file_extension]
         elif file_extension == "jsx":
             return node_types["js"]
+        elif file_extension == "tsx":
+            return node_types["ts"]
         else:
             raise ValueError("Unsupported file type")
         
@@ -135,6 +200,17 @@ class CodeParser:
             'js': {
                 'comment': 'Comment',
                 'decorator': 'Decorator',  # Broadened category
+            },
+            'ts': {
+                'comment': 'Comment',
+                'decorator': 'Decorator',
+            },
+            'php': {
+                'comment': 'Comment',
+                'attribute': 'Attribute',
+            },
+            'rb': {
+                'comment': 'Comment',
             }
         }
 
@@ -264,10 +340,3 @@ class CodeParser:
 
         return line_to_node_type
     
-    def print_simple_line_numbers_with_code(self, code: str):
-
-        code_lines = code.split('\n')
-
-        for i, line in enumerate(code_lines):
-            print(f"Line {i + 1}: {line}")
-

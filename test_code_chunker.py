@@ -1,13 +1,11 @@
 import unittest
 from unittest.mock import patch
 from Chunker import Chunker, CodeChunker
-from utils import load_json
 import tiktoken
-import json
-import os
+from utils import load_json
 
-                                
 
+                        
 # Mocking the count_tokens function as it's external and not the focus of these tests
 def mock_count_tokens(string: str, encoding_name='gpt-4') -> int:
     """Returns the number of tokens in a text string."""
@@ -18,7 +16,7 @@ def mock_count_tokens(string: str, encoding_name='gpt-4') -> int:
 # Python Test Class
 class TestCodeChunkerPython(unittest.TestCase):
     def setUp(self):
-        self.patcher = patch('app.util.TextChunker.Chunker.count_tokens', side_effect=mock_count_tokens)
+        self.patcher = patch('utils.count_tokens', side_effect=mock_count_tokens)
         self.mock_count_tokens = self.patcher.start()
         self.code_chunker = CodeChunker(file_extension='py')
         self.mock_codebase = load_json('mock_codefiles.json')
