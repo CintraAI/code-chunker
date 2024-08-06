@@ -7,8 +7,6 @@ def count_tokens(string: str, encoding_name: str) -> int:
     num_tokens = len(encoding.encode(string))
     return num_tokens
 
-
-
 def load_json(json_file):
     with open(json_file) as f:
         return json.load(f)

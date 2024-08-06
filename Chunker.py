@@ -3,7 +3,6 @@ from CodeParser import CodeParser
 from utils import count_tokens
 
 
-
 class Chunker(ABC):
     def __init__(self, encoding_name="gpt-4"):
         self.encoding_name = encoding_name
@@ -20,18 +19,19 @@ class Chunker(ABC):
     def print_chunks(chunks):
         for chunk_number, chunk_code in chunks.items():
             print(f"Chunk {chunk_number}:")
-            print("="*40)
+            print("=" * 40)
             print(chunk_code)
-            print("="*40)
+            print("=" * 40)
 
     @staticmethod
     def consolidate_chunks_into_file(chunks):
         return "\n".join(chunks.values())
-    
+
     @staticmethod
     def count_lines(consolidated_chunks):
         lines = consolidated_chunks.split("\n")
         return len(lines)
+
 
 class CodeChunker(Chunker):
     def __init__(self, file_extension, encoding_name="gpt-4"):
@@ -60,15 +60,16 @@ class CodeChunker(Chunker):
             if highest_comment_line:  # If a highest comment line exists, add it
                 adjusted_breakpoints.append(highest_comment_line)
             else:
-                adjusted_breakpoints.append(bp)  # If no comments were found before the breakpoint, add the original breakpoint
+                adjusted_breakpoints.append(
+                    bp)  # If no comments were found before the breakpoint, add the original breakpoint
 
         breakpoints = sorted(set(adjusted_breakpoints))  # Ensure breakpoints are unique and sorted
-        
+
         while i < len(lines):
             line = lines[i]
             new_token_count = count_tokens(line, self.encoding_name)
             if token_count + new_token_count > token_limit:
-                
+
                 # Set the stop line to the last breakpoint before the current line
                 if i in breakpoints:
                     stop_line = i
@@ -79,20 +80,20 @@ class CodeChunker(Chunker):
                 if stop_line == start_line and i not in breakpoints:
                     token_count += new_token_count
                     i += 1
-                
+
                 # If the stop line is the same as the start line and the current line is a breakpoint, it means we can create a chunk with just the current line
                 elif stop_line == start_line and i == stop_line:
                     token_count += new_token_count
                     i += 1
-                
-                
+
+
                 # If the stop line is the same as the start line and the current line is a breakpoint, it means we can create a chunk with just the current line
                 elif stop_line == start_line and i in breakpoints:
                     current_chunk = "\n".join(lines[start_line:stop_line])
                     if current_chunk.strip():  # If the current chunk is not just whitespace
                         chunks[chunk_number] = current_chunk  # Using chunk_number as key
                         chunk_number += 1
-                       
+
                     token_count = 0
                     start_line = i
                     i += 1
@@ -103,7 +104,7 @@ class CodeChunker(Chunker):
                     if current_chunk.strip():
                         chunks[chunk_number] = current_chunk  # Using chunk_number as key
                         chunk_number += 1
-                       
+
                     i = stop_line
                     token_count = 0
                     start_line = stop_line
@@ -116,9 +117,8 @@ class CodeChunker(Chunker):
         current_chunk_code = "\n".join(lines[start_line:])
         if current_chunk_code.strip():  # Checks if the chunk is not just whitespace
             chunks[chunk_number] = current_chunk_code  # Using chunk_number as key
-            
+
         return chunks
 
     def get_chunk(self, chunked_codebase, chunk_number):
         return chunked_codebase[chunk_number]
-

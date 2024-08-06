@@ -208,5 +208,75 @@ class TestCodeChunkerCSS(unittest.TestCase):
         self.assertEqual(num_lines, len(css_code.split("\n")))
         self.assertIn(css_code, final_code)
 
+
+    
+# TypeScript Test Class
+class TestCodeChunkerTypeScript(unittest.TestCase):
+
+    def setUp(self):
+        self.patcher = patch('app.util.TextChunker.Chunker.count_tokens', side_effect=mock_count_tokens)
+        self.mock_count_tokens = self.patcher.start()
+        self.code_chunker = CodeChunker(file_extension='ts')
+        self.mock_codebase = load_json('mock_codefiles.json')
+
+
+    def tearDown(self):
+        self.patcher.stop()
+
+    def test_chunk_typescript_code(self):
+        ts_code = self.mock_codebase['example.ts']
+        chunks = self.code_chunker.chunk(ts_code, token_limit=20)
+        Chunker.print_chunks(chunks)
+        final_code = Chunker.consolidate_chunks_into_file(chunks)
+        num_lines = Chunker.count_lines(final_code)
+        self.assertEqual(num_lines, len(ts_code.split("\n")))
+        self.assertIn(ts_code, final_code)
+        self.assertGreater(len(chunks), 1)  # Ensure the code is actually chunked
+
+# Ruby Test Class
+class TestCodeChunkerRuby(unittest.TestCase):
+
+    def setUp(self):
+        self.patcher = patch('app.util.TextChunker.Chunker.count_tokens', side_effect=mock_count_tokens)
+        self.mock_count_tokens = self.patcher.start()
+        self.code_chunker = CodeChunker(file_extension='rb')
+        self.mock_codebase = load_json('mock_codefiles.json')
+
+
+    def tearDown(self):
+        self.patcher.stop()
+
+    def test_chunk_ruby_code(self):
+        rb_code = self.mock_codebase['example.rb']
+        chunks = self.code_chunker.chunk(rb_code, token_limit=20)
+        Chunker.print_chunks(chunks)
+        final_code = Chunker.consolidate_chunks_into_file(chunks)
+        num_lines = Chunker.count_lines(final_code)
+        self.assertEqual(num_lines, len(rb_code.split("\n")))
+        self.assertIn(rb_code, final_code)
+        self.assertGreater(len(chunks), 1)  # Ensure the code is actually chunked
+
+# PHP Test Class
+class TestCodeChunkerPHP(unittest.TestCase):
+
+    def setUp(self):
+        self.patcher = patch('app.util.TextChunker.Chunker.count_tokens', side_effect=mock_count_tokens)
+        self.mock_count_tokens = self.patcher.start()
+        self.code_chunker = CodeChunker(file_extension='php')
+        self.mock_codebase = load_json('mock_codefiles.json')
+
+    def tearDown(self):
+        self.patcher.stop()
+
+    def test_chunk_php_code(self):
+        php_code = self.mock_codebase['example.php']
+        chunks = self.code_chunker.chunk(php_code, token_limit=20)
+        Chunker.print_chunks(chunks)
+        final_code = Chunker.consolidate_chunks_into_file(chunks)
+        num_lines = Chunker.count_lines(final_code)
+        self.assertEqual(num_lines, len(php_code.split("\n")))
+        self.assertIn(php_code, final_code)
+        self.assertGreater(len(chunks), 1)  # Ensure the code is actually chunked
+
 if __name__ == '__main__':
     unittest.main()
