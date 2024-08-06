@@ -50,10 +50,8 @@ def get_language_by_extension(file_extension):
         return 'javascript'
     elif file_extension == 'css':
         return 'css'
-    elif file_extension in ['ts', 'typescript']:
-        return 'typescript/typescript'
-    elif file_extension in ['tsx']:
-        return 'typescript/tsx'
+    elif file_extension in ['ts', 'typescript', 'tsx']:
+        return 'typescript'
     elif file_extension in ['rb', 'ruby']:
         return 'ruby'
     elif file_extension == 'php':
