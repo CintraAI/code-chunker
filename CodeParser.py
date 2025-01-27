@@ -53,11 +53,11 @@ class CodeParser:
                     try:
                         if os.path.exists(repo_path):
                             logging.info(f"Updating existing repository for {language}")
-                            update_command = f"cd {repo_path} && git pull"
+                            update_command = f'cd "{repo_path}" && git pull'
                             subprocess.run(update_command, shell=True, check=True)
                         else:
                             logging.info(f"Cloning repository for {language}")
-                            clone_command = f"git clone https://github.com/tree-sitter/tree-sitter-{language} {repo_path}"
+                            clone_command = f'git clone https://github.com/tree-sitter/tree-sitter-{language} "{repo_path}"'
                             subprocess.run(clone_command, shell=True, check=True)
                     except subprocess.CalledProcessError as e:
                         logging.error(f"Failed to clone/update repository for {language}. Error: {e}")
