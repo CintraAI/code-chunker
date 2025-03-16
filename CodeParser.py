@@ -19,7 +19,8 @@ class CodeParser:
             "ts": "typescript",
             "tsx": "typescript",
             "php": "php",
-            "rb": "ruby"
+            "rb": "ruby",
+            "cs": "c_sharp"
         }
         if file_extensions is None:
             self.language_names = []
@@ -72,6 +73,12 @@ class CodeParser:
                             Language.build_library(build_path, [php_dir])
                         else:
                             raise FileNotFoundError(f"PHP directory not found in {repo_path}")
+                    elif language == 'c_sharp':
+                        csharp_dir = os.path.join(repo_path, 'src')
+                        if os.path.exists(csharp_dir):
+                            Language.build_library(build_path, [repo_path])
+                        else:
+                            raise FileNotFoundError(f"C# source directory not found in {repo_path}")
                     else:
                         Language.build_library(build_path, [repo_path])
                     
@@ -86,6 +93,8 @@ class CodeParser:
                         logging.error(f"TSX dir exists: {os.path.exists(tsx_dir)}")
                     elif language == 'php':
                         logging.error(f"PHP dir exists: {os.path.exists(php_dir)}")
+                    elif language == 'c_sharp':
+                        logging.error(f"C# src dir exists: {os.path.exists(csharp_dir)}")
 
         except Exception as e:
             logging.error(f"An unexpected error occurred during parser installation: {str(e)}")
@@ -177,6 +186,19 @@ class CodeParser:
                 'module': 'Module',
                 'singleton_class': 'Singleton Class',
                 'begin': 'Begin Block',
+            },
+            'cs': {
+                'using_directive': 'Using',
+                'namespace_declaration': 'Namespace',
+                'class_declaration': 'Class',
+                'method_declaration': 'Method',
+                'constructor_declaration': 'Constructor',
+                'property_declaration': 'Property',
+                'interface_declaration': 'Interface',
+                'enum_declaration': 'Enum',
+                'struct_declaration': 'Struct',
+                'delegate_declaration': 'Delegate',
+                'attribute_list': 'Attribute'
             }
         }
 
@@ -212,6 +234,9 @@ class CodeParser:
                 'attribute': 'Attribute',
             },
             'rb': {
+                'comment': 'Comment',
+            },
+            'cs': {
                 'comment': 'Comment',
             }
         }
