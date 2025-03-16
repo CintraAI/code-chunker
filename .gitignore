@@ -1,0 +1,53 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Code parser cache
+~/.code_parser_cache/
+.code_parser_cache/
+
+# Tree-sitter build artifacts
+*.so
+build/
+
+# Virtual environments
+venv/
+env/
+ENV/
+.env/
+.venv/
+env.bak/
+venv.bak/
+
+# Editor/IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+.ipynb_checkpoints
+
+# Local configuration
+.local/
+.history/
+
+# Logs
+*.log
