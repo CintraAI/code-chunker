@@ -2,15 +2,7 @@ import os
 import subprocess
 from typing import List, Dict, Union, Tuple
 from tree_sitter import Language, Parser, Node
-from typing import Union, List
 import logging
-
-def return_simple_line_numbers_with_code(code: str) -> str:
-    code_lines = code.split('\n')
-    code_with_line_numbers = [f"Line {i + 1}: {line}" for i, line in enumerate(code_lines)]
-    joined_lines = "\n".join(code_with_line_numbers)
-    return joined_lines
-
 
 class CodeParser:
     # Added a CACHE_DIR class attribute for caching
@@ -53,11 +45,11 @@ class CodeParser:
                     try:
                         if os.path.exists(repo_path):
                             logging.info(f"Updating existing repository for {language}")
-                            update_command = f'cd "{repo_path}" && git pull'
+                            update_command = f"cd {repo_path} && git pull"
                             subprocess.run(update_command, shell=True, check=True)
                         else:
                             logging.info(f"Cloning repository for {language}")
-                            clone_command = f'git clone https://github.com/tree-sitter/tree-sitter-{language} "{repo_path}"'
+                            clone_command = f"git clone https://github.com/tree-sitter/tree-sitter-{language} {repo_path}"
                             subprocess.run(clone_command, shell=True, check=True)
                     except subprocess.CalledProcessError as e:
                         logging.error(f"Failed to clone/update repository for {language}. Error: {e}")
@@ -74,9 +66,12 @@ class CodeParser:
                             Language.build_library(build_path, [ts_dir, tsx_dir])
                         else:
                             raise FileNotFoundError(f"TypeScript or TSX directory not found in {repo_path}")
-                    if language == 'php':
+                    elif language == 'php':
                         php_dir = os.path.join(repo_path, 'php')
-                        Language.build_library(build_path, [php_dir])
+                        if os.path.exists(php_dir):
+                            Language.build_library(build_path, [php_dir])
+                        else:
+                            raise FileNotFoundError(f"PHP directory not found in {repo_path}")
                     else:
                         Language.build_library(build_path, [repo_path])
                     
@@ -84,6 +79,13 @@ class CodeParser:
                     logging.info(f"Successfully built and loaded {language} parser")
                 except Exception as e:
                     logging.error(f"Failed to build or load language {language}. Error: {str(e)}")
+                    logging.error(f"Repository path: {repo_path}")
+                    logging.error(f"Build path: {build_path}")
+                    if language == 'typescript':
+                        logging.error(f"TypeScript dir exists: {os.path.exists(ts_dir)}")
+                        logging.error(f"TSX dir exists: {os.path.exists(tsx_dir)}")
+                    elif language == 'php':
+                        logging.error(f"PHP dir exists: {os.path.exists(php_dir)}")
 
         except Exception as e:
             logging.error(f"An unexpected error occurred during parser installation: {str(e)}")
@@ -218,6 +220,8 @@ class CodeParser:
             return node_types[file_extension]
         elif file_extension == "jsx":
             return node_types["js"]
+        elif file_extension == "tsx":
+            return node_types["ts"]
         else:
             raise ValueError("Unsupported file type")
         

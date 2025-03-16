@@ -104,7 +104,7 @@ class TestCodeChunkerPython(unittest.TestCase):
 class TestCodeChunkerJavaScript(unittest.TestCase):
 
     def setUp(self):
-        self.patcher = patch('app.util.TextChunker.Chunker.count_tokens', side_effect=mock_count_tokens)
+        self.patcher = patch('utils.count_tokens', side_effect=mock_count_tokens)
         self.mock_count_tokens = self.patcher.start()
         self.code_chunker = CodeChunker(file_extension='js')
         self.mock_codebase = load_json('mock_codefiles.json')
@@ -181,7 +181,7 @@ class TestCodeChunkerJavaScript(unittest.TestCase):
 class TestCodeChunkerCSS(unittest.TestCase):
    
     def setUp(self):
-        self.patcher = patch('app.util.TextChunker.Chunker.count_tokens', side_effect=mock_count_tokens)
+        self.patcher = patch('utils.count_tokens', side_effect=mock_count_tokens)
         self.mock_count_tokens = self.patcher.start()
         self.code_chunker = CodeChunker(file_extension='css')
          #Load the JSON data
@@ -214,7 +214,7 @@ class TestCodeChunkerCSS(unittest.TestCase):
 class TestCodeChunkerTypeScript(unittest.TestCase):
 
     def setUp(self):
-        self.patcher = patch('app.util.TextChunker.Chunker.count_tokens', side_effect=mock_count_tokens)
+        self.patcher = patch('utils.count_tokens', side_effect=mock_count_tokens)
         self.mock_count_tokens = self.patcher.start()
         self.code_chunker = CodeChunker(file_extension='ts')
         self.mock_codebase = load_json('mock_codefiles.json')
@@ -237,7 +237,7 @@ class TestCodeChunkerTypeScript(unittest.TestCase):
 class TestCodeChunkerRuby(unittest.TestCase):
 
     def setUp(self):
-        self.patcher = patch('app.util.TextChunker.Chunker.count_tokens', side_effect=mock_count_tokens)
+        self.patcher = patch('utils.count_tokens', side_effect=mock_count_tokens)
         self.mock_count_tokens = self.patcher.start()
         self.code_chunker = CodeChunker(file_extension='rb')
         self.mock_codebase = load_json('mock_codefiles.json')
@@ -260,7 +260,7 @@ class TestCodeChunkerRuby(unittest.TestCase):
 class TestCodeChunkerPHP(unittest.TestCase):
 
     def setUp(self):
-        self.patcher = patch('app.util.TextChunker.Chunker.count_tokens', side_effect=mock_count_tokens)
+        self.patcher = patch('utils.count_tokens', side_effect=mock_count_tokens)
         self.mock_count_tokens = self.patcher.start()
         self.code_chunker = CodeChunker(file_extension='php')
         self.mock_codebase = load_json('mock_codefiles.json')
