@@ -56,6 +56,8 @@ def get_language_by_extension(file_extension):
         return 'ruby'
     elif file_extension == 'php':
         return 'php'
+    elif file_extension == 'cs':
+        return 'csharp'
     else:
         return None
 
