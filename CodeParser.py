@@ -19,7 +19,8 @@ class CodeParser:
             "ts": "typescript",
             "tsx": "typescript",
             "php": "php",
-            "rb": "ruby"
+            "rb": "ruby",
+            "cs": "c_sharp"
         }
         if file_extensions is None:
             self.language_names = []
@@ -72,6 +73,8 @@ class CodeParser:
                             Language.build_library(build_path, [php_dir])
                         else:
                             raise FileNotFoundError(f"PHP directory not found in {repo_path}")
+                    elif language == 'c_sharp':
+                        Language.build_library(build_path, [repo_path])
                     else:
                         Language.build_library(build_path, [repo_path])
                     
@@ -177,6 +180,15 @@ class CodeParser:
                 'module': 'Module',
                 'singleton_class': 'Singleton Class',
                 'begin': 'Begin Block',
+            },
+            'cs': {
+                'namespace_declaration': 'Namespace',
+                'class_declaration': 'Class',
+                'method_declaration': 'Method',
+                'constructor_declaration': 'Constructor',
+                'interface_declaration': 'Interface',
+                'property_declaration': 'Property',
+                'using_directive': 'Using'
             }
         }
 
@@ -213,6 +225,10 @@ class CodeParser:
             },
             'rb': {
                 'comment': 'Comment',
+            },
+            'cs': {
+                'comment': 'Comment',
+                'attribute_list': 'Attribute'
             }
         }
 
