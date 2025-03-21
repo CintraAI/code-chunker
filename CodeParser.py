@@ -19,7 +19,8 @@ class CodeParser:
             "ts": "typescript",
             "tsx": "typescript",
             "php": "php",
-            "rb": "ruby"
+            "rb": "ruby",
+            "go": "go"
         }
         if file_extensions is None:
             self.language_names = []
@@ -97,6 +98,8 @@ class CodeParser:
                      os.path.exists(os.path.join(repo_path, 'tsx', 'src', 'parser.c')))
         elif language == 'php':
             return os.path.exists(os.path.join(repo_path, 'php', 'src', 'parser.c'))
+        elif language == 'go':
+            return os.path.exists(os.path.join(repo_path, 'src', 'parser.c'))
         else:
             return os.path.exists(os.path.join(repo_path, 'src', 'parser.c'))
 
@@ -140,6 +143,14 @@ class CodeParser:
                 'export_statement': 'Export',
                 'class_definition': 'Class',
                 'function_definition': 'Function',
+            },
+            'go': {
+                'package_clause': 'Package',
+                'import_declaration': 'Import',
+                'function_declaration': 'Function',
+                'method_declaration': 'Method',
+                'type_declaration': 'Type',
+                'struct_declaration': 'Struct',
             },
             'css': {
                 'tag_name': 'Tag',
@@ -195,6 +206,9 @@ class CodeParser:
             'py': {
                 'comment': 'Comment',
                 'decorator': 'Decorator',  # Broadened category
+            },
+            'go': {
+                'comment': 'Comment',
             },
             'css': {
                 'comment': 'Comment'
