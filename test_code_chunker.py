@@ -278,5 +278,57 @@ class TestCodeChunkerPHP(unittest.TestCase):
         self.assertIn(php_code, final_code)
         self.assertGreater(len(chunks), 1)  # Ensure the code is actually chunked
 
+# Golang Test Class
+class TestCodeChunkerGolang(unittest.TestCase):
+
+    def setUp(self):
+        self.patcher = patch('utils.count_tokens', side_effect=mock_count_tokens)
+        self.mock_count_tokens = self.patcher.start()
+        self.code_chunker = CodeChunker(file_extension='go')
+        self.mock_codebase = load_json('mock_codefiles.json')
+
+    def tearDown(self):
+        self.patcher.stop()
+
+    def test_chunk_golang_simple_code(self):
+        go_code = self.mock_codebase['simple.go']
+        chunks = self.code_chunker.chunk(go_code, token_limit=20)
+        Chunker.print_chunks(chunks)
+        final_code = Chunker.consolidate_chunks_into_file(chunks)
+        num_lines = Chunker.count_lines(final_code)
+        self.assertEqual(num_lines, len(go_code.split("\n")))
+        self.assertIn(go_code, final_code)
+        self.assertGreater(len(chunks), 1)  # Ensure the code is actually chunked
+
+    def test_chunk_golang_with_structs(self):
+        go_code = self.mock_codebase['structs.go']
+        chunks = self.code_chunker.chunk(go_code, token_limit=20)
+        Chunker.print_chunks(chunks)
+        final_code = Chunker.consolidate_chunks_into_file(chunks)
+        num_lines = Chunker.count_lines(final_code)
+        self.assertEqual(num_lines, len(go_code.split("\n")))
+        self.assertIn(go_code, final_code)
+        self.assertGreater(len(chunks), 1)
+
+    def test_chunk_golang_with_interfaces(self):
+        go_code = self.mock_codebase['interfaces.go']
+        chunks = self.code_chunker.chunk(go_code, token_limit=20)
+        Chunker.print_chunks(chunks)
+        final_code = Chunker.consolidate_chunks_into_file(chunks)
+        num_lines = Chunker.count_lines(final_code)
+        self.assertEqual(num_lines, len(go_code.split("\n")))
+        self.assertIn(go_code, final_code)
+        self.assertGreater(len(chunks), 1)
+
+    def test_chunk_golang_with_goroutines(self):
+        go_code = self.mock_codebase['goroutines.go']
+        chunks = self.code_chunker.chunk(go_code, token_limit=20)
+        Chunker.print_chunks(chunks)
+        final_code = Chunker.consolidate_chunks_into_file(chunks)
+        num_lines = Chunker.count_lines(final_code)
+        self.assertEqual(num_lines, len(go_code.split("\n")))
+        self.assertIn(go_code, final_code)
+        self.assertGreater(len(chunks), 1)
+
 if __name__ == '__main__':
     unittest.main()
