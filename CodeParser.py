@@ -19,7 +19,8 @@ class CodeParser:
             "ts": "typescript",
             "tsx": "typescript",
             "php": "php",
-            "rb": "ruby"
+            "rb": "ruby",
+            "go": "go"
         }
         if file_extensions is None:
             self.language_names = []
@@ -177,6 +178,15 @@ class CodeParser:
                 'module': 'Module',
                 'singleton_class': 'Singleton Class',
                 'begin': 'Begin Block',
+            },
+            'go': {
+                'import_declaration': 'Import',
+                'function_declaration': 'Function',
+                'method_declaration': 'Method',
+                'type_declaration': 'Type',
+                'struct_type': 'Struct',
+                'interface_type': 'Interface',
+                'package_clause': 'Package'
             }
         }
 
@@ -212,6 +222,9 @@ class CodeParser:
                 'attribute': 'Attribute',
             },
             'rb': {
+                'comment': 'Comment',
+            },
+            'go': {
                 'comment': 'Comment',
             }
         }
