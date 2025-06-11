@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cintra-code-chunker"
+version = "0.1.0"
+description = "Code Chunker tool that intelligently chunks source code based on points of interest."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.8"
+authors = [
+    { name = "CintraAI", email = "info@cintraai.com" }
+]
+keywords = ["code", "chunk", "parser", "tree-sitter", "rag"]
+dependencies = [
+    "tiktoken>=0.6.0",
+    "tree-sitter>=0.21.3",
+    "regex>=2023.12.25",
+    "streamlit>=1.33.0",
+    "toml>=0.10.2"
+]
+
+[project.urls]
+Homepage = "https://github.com/CintraAI/code-chunker"
+Repository = "https://github.com/CintraAI/code-chunker"
+Issues = "https://github.com/CintraAI/code-chunker/issues"
+
+[tool.setuptools]
+py-modules = ["Chunker", "CodeParser", "utils", "app"]
+
+[tool.setuptools.package-data]
+"" = ["mock_codefiles.json"]
